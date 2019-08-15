@@ -116,6 +116,48 @@ public class MainApplication {
     }
 ```
 
+# 上传文件路由实现
+- Controller 参数使用一个bean
+```
+    @PostMapping(value = "/add")
+    public ResultDto addApplication(HttpServletRequest request, ApplicationAddForm applicationAddForm) {
+        //todo 参数校验
+        applicationService.addApp(applicationAddForm);
+        return new ResultDto(RpaStatusCode.SUCCESS);
+    }
+```
+- bean内具体属性设置一个MultipartFile
+```
+@Getter
+@Setter
+@AllArgsConstructor
+//todo 添加参数的校验
+public class ApplicationAddForm {
+    private String title;
+
+    private String avatar;
+
+    @JsonProperty(value = "version_num")
+    private Integer versionNum;
+
+    private Integer type;
+
+    private Integer developer;
+
+    private String description;
+
+    private MultipartFile blFile;
+```
+
+这样便可以接受文件和表单一起提交过来的请求了，直接在Service中取出实体中的blFile，调用`StoreFile`方法储存
+
+``` 
+        String storeFileName = "Test"
+        MultipartFile blFile = applicationAddForm.getBlFile();
+        storeFile(blFile, storeFileName);
+
+```
+
 # 下载文件路由实现
 ```
   @GetMapping(value = "/download")
