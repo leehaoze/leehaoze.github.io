@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Spring,Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="参考自掘金的文章 设置配置文件在Spring的配置文件application.properties中新增文件上传相关的配置 12345678910111213## MULTIPART (MultipartProperties)# 开启 multipart 上传功能spring.servlet.multipart.enabled=true# 文件写入磁盘的阈值spring.servlet.multi">
+<meta name="keywords" content="Spring,Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot实现文件上传与下载">
+<meta property="og:url" content="http://leehaoze.com/2019/08/15/Spring-Boot实现文件上传与下载/index.html">
+<meta property="og:site_name" content="Leehaoze&#39;s blog">
+<meta property="og:description" content="参考自掘金的文章 设置配置文件在Spring的配置文件application.properties中新增文件上传相关的配置 12345678910111213## MULTIPART (MultipartProperties)# 开启 multipart 上传功能spring.servlet.multipart.enabled=true# 文件写入磁盘的阈值spring.servlet.multi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-26T11:47:02.713Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring Boot实现文件上传与下载">
+<meta name="twitter:description" content="参考自掘金的文章 设置配置文件在Spring的配置文件application.properties中新增文件上传相关的配置 12345678910111213## MULTIPART (MultipartProperties)# 开启 multipart 上传功能spring.servlet.multipart.enabled=true# 文件写入磁盘的阈值spring.servlet.multi">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://leehaoze.com/2019/08/15/Spring-Boot实现文件上传与下载/">
+
+
+
+
+
+  <title>Spring Boot实现文件上传与下载 | Leehaoze's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leehaoze's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Code&Life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/Spring-Boot实现文件上传与下载/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring Boot实现文件上传与下载</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T11:20:09+08:00">
+                2019-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>参考自<a href="https://juejin.im/post/5c9e57e2f265da307a160328" target="_blank" rel="noopener">掘金的文章</a></p>
+<h1 id="设置配置文件"><a href="#设置配置文件" class="headerlink" title="设置配置文件"></a>设置配置文件</h1><p>在Spring的配置文件<code>application.properties</code>中新增文件上传相关的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## MULTIPART (MultipartProperties)</span><br><span class="line"># 开启 multipart 上传功能</span><br><span class="line">spring.servlet.multipart.enabled=true</span><br><span class="line"># 文件写入磁盘的阈值</span><br><span class="line">spring.servlet.multipart.file-size-threshold=2KB</span><br><span class="line"># 最大文件大小</span><br><span class="line">spring.servlet.multipart.max-file-size=200MB</span><br><span class="line"># 最大请求大小</span><br><span class="line">spring.servlet.multipart.max-request-size=215MB</span><br><span class="line"></span><br><span class="line">## 文件存储所需参数(此为自定义参数 需要单独进行配置)</span><br><span class="line"># 所有通过 REST APIs 上传的文件都将存储在此目录下</span><br><span class="line">file.upload-dir=./uploads</span><br></pre></td></tr></table></figure>
+
+<h1 id="为自定义的配置参数创建POJO类"><a href="#为自定义的配置参数创建POJO类" class="headerlink" title="为自定义的配置参数创建POJO类"></a>为自定义的配置参数创建POJO类</h1><ul>
+<li><p>引入自定义配置依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;</span><br><span class="line">    &lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建配置类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@ConfigurationProperties(prefix = &quot;file&quot;)</span><br><span class="line">@Getter</span><br><span class="line">@Setter</span><br><span class="line">public class FileProperties &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 上传目录</span><br><span class="line">     */</span><br><span class="line">    private String uploadDir;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在应用入口添加注解开启自定义配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@EnableConfigurationProperties(&#123;</span><br><span class="line">        FileProperties.class</span><br><span class="line">&#125;)</span><br><span class="line">public class MainApplication &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(RpaMainApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用 通过注解直接注入到构造函数中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 文件在本地存储的地址</span><br><span class="line"> */</span><br><span class="line">private final Path fileStorageLocation;</span><br><span class="line"></span><br><span class="line">@Autowired</span><br><span class="line">public ApplicationServiceImpl(FileProperties fileProperties) &#123;</span><br><span class="line">    this.fileStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();</span><br><span class="line">    try &#123;</span><br><span class="line">        Files.createDirectories(this.fileStorageLocation);</span><br><span class="line">    &#125; catch (Exception ex) &#123;</span><br><span class="line">        throw new Exception(StatusCode.FILE_UPLOAD_FAILED);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="存储文件函数"><a href="#存储文件函数" class="headerlink" title="存储文件函数"></a>存储文件函数</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 存储文件到系统</span><br><span class="line"> *</span><br><span class="line"> * @param file 文件</span><br><span class="line"> * @return 文件名</span><br><span class="line"> */</span><br><span class="line">private void storeFile(MultipartFile file, String fileName) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        // Copy file to the target location (Replacing existing file with the same name)</span><br><span class="line">        Path targetLocation = this.fileStorageLocation.resolve(fileName);</span><br><span class="line">        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);</span><br><span class="line">    &#125; catch (IOException ex) &#123;</span><br><span class="line">        throw new Exception(StatusCode.FILE_UPLOAD_FAILED);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="加载文件函数"><a href="#加载文件函数" class="headerlink" title="加载文件函数"></a>加载文件函数</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * 加载文件</span><br><span class="line">     * @param fileName 文件名</span><br><span class="line">     * @return 文件</span><br><span class="line">     */</span><br><span class="line">    private Resource loadFileAsResource(String fileName) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();</span><br><span class="line">            Resource resource = new UrlResource(filePath.toUri());</span><br><span class="line">            if(resource.exists()) &#123;</span><br><span class="line">                return resource;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                throw new Exception(RpaStatusCode.FILE_NOT_FOUND);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (MalformedURLException ex) &#123;</span><br><span class="line">            throw new Exception(RpaStatusCode.FILE_NOT_FOUND);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="上传文件路由实现"><a href="#上传文件路由实现" class="headerlink" title="上传文件路由实现"></a>上传文件路由实现</h1><ul>
+<li><p>Controller 参数使用一个bean</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@PostMapping(value = &quot;/add&quot;)</span><br><span class="line">public ResultDto addApplication(HttpServletRequest request, ApplicationAddForm applicationAddForm) &#123;</span><br><span class="line">    //todo 参数校验</span><br><span class="line">    applicationService.addApp(applicationAddForm);</span><br><span class="line">    return new ResultDto(RpaStatusCode.SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>bean内具体属性设置一个MultipartFile</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Getter</span><br><span class="line">@Setter</span><br><span class="line">@AllArgsConstructor</span><br><span class="line">//todo 添加参数的校验</span><br><span class="line">public class ApplicationAddForm &#123;</span><br><span class="line">    private String title;</span><br><span class="line"></span><br><span class="line">    private String avatar;</span><br><span class="line"></span><br><span class="line">    @JsonProperty(value = &quot;version_num&quot;)</span><br><span class="line">    private Integer versionNum;</span><br><span class="line"></span><br><span class="line">    private Integer type;</span><br><span class="line"></span><br><span class="line">    private Integer developer;</span><br><span class="line"></span><br><span class="line">    private String description;</span><br><span class="line"></span><br><span class="line">    private MultipartFile blFile;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>这样便可以接受文件和表单一起提交过来的请求了，直接在Service中取出实体中的blFile，调用<code>StoreFile</code>方法储存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String storeFileName = &quot;Test&quot;</span><br><span class="line">MultipartFile blFile = applicationAddForm.getBlFile();</span><br><span class="line">storeFile(blFile, storeFileName);</span><br></pre></td></tr></table></figure>
+
+<h1 id="下载文件路由实现"><a href="#下载文件路由实现" class="headerlink" title="下载文件路由实现"></a>下载文件路由实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@GetMapping(value = &quot;/download&quot;)</span><br><span class="line">  public ResponseEntity&lt;Resource&gt; downApplication(HttpServletRequest request, @RequestParam(value = &quot;filename&quot;) String filename, ) &#123;</span><br><span class="line">      Resource resource = applicationService.loadFileAsResource(filename);</span><br><span class="line"></span><br><span class="line">      String contentType;</span><br><span class="line">      try &#123;</span><br><span class="line">          contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());</span><br><span class="line">      &#125; catch (IOException ex) &#123;</span><br><span class="line">          contentType = &quot;application/octet-stream&quot;;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return ResponseEntity.ok()</span><br><span class="line">              .contentType(MediaType.parseMediaType(contentType))</span><br><span class="line">              .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=\&quot;&quot; + resource.getFilename() + &quot;\&quot;&quot;)</span><br><span class="line">              .body(resource);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/14/Spring热部署-热部署不生效问题/" rel="next" title="Spring热部署+热部署不生效问题">
+                <i class="fa fa-chevron-left"></i> Spring热部署+热部署不生效问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/15/Spring-Boot多环境配置/" rel="prev" title="Spring Boot多环境配置">
+                Spring Boot多环境配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Leehaoze</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#设置配置文件"><span class="nav-number">1.</span> <span class="nav-text">设置配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为自定义的配置参数创建POJO类"><span class="nav-number">2.</span> <span class="nav-text">为自定义的配置参数创建POJO类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储文件函数"><span class="nav-number">3.</span> <span class="nav-text">存储文件函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#加载文件函数"><span class="nav-number">4.</span> <span class="nav-text">加载文件函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#上传文件路由实现"><span class="nav-number">5.</span> <span class="nav-text">上传文件路由实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#下载文件路由实现"><span class="nav-number">6.</span> <span class="nav-text">下载文件路由实现</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leehaoze</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="数据结构,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="树作为数据结构中的一种，其目的自然与其他数据结构一致，为了解决数据的高效存取。 树是作为链表和数组的中和，链表插入、删除很快，但是查找很慢，数组查找很快，但是插入删除很慢，而具有一定特征的树(有序、平衡)可以很好中和两者特点，插入删除查询都比较快。 要想明白红黑树，就要从其起源开始说，红黑树本质是一个弱平衡的二叉搜索树。 先来说最普通的二叉搜索树，二叉搜索树是在普通的二叉树上增加了一个要求，简单来">
+<meta name="keywords" content="数据结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探索红黑树">
+<meta property="og:url" content="http://leehaoze.com/2019/12/26/探索红黑树/index.html">
+<meta property="og:site_name" content="Leehaoze&#39;s blog">
+<meta property="og:description" content="树作为数据结构中的一种，其目的自然与其他数据结构一致，为了解决数据的高效存取。 树是作为链表和数组的中和，链表插入、删除很快，但是查找很慢，数组查找很快，但是插入删除很慢，而具有一定特征的树(有序、平衡)可以很好中和两者特点，插入删除查询都比较快。 要想明白红黑树，就要从其起源开始说，红黑树本质是一个弱平衡的二叉搜索树。 先来说最普通的二叉搜索树，二叉搜索树是在普通的二叉树上增加了一个要求，简单来">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/26/lEneG8.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/26/lEnmRS.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/26/lEnnxg.jpg">
+<meta property="og:updated_time" content="2019-12-26T13:21:50.857Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="探索红黑树">
+<meta name="twitter:description" content="树作为数据结构中的一种，其目的自然与其他数据结构一致，为了解决数据的高效存取。 树是作为链表和数组的中和，链表插入、删除很快，但是查找很慢，数组查找很快，但是插入删除很慢，而具有一定特征的树(有序、平衡)可以很好中和两者特点，插入删除查询都比较快。 要想明白红黑树，就要从其起源开始说，红黑树本质是一个弱平衡的二叉搜索树。 先来说最普通的二叉搜索树，二叉搜索树是在普通的二叉树上增加了一个要求，简单来">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/12/26/lEneG8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://leehaoze.com/2019/12/26/探索红黑树/">
+
+
+
+
+
+  <title>探索红黑树 | Leehaoze's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leehaoze's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Code&Life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/12/26/探索红黑树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">探索红黑树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-26T21:10:24+08:00">
+                2019-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>树作为数据结构中的一种，其目的自然与其他数据结构一致，为了解决数据的高效存取。</p>
+<p>树是作为链表和数组的中和，链表插入、删除很快，但是查找很慢，数组查找很快，但是插入删除很慢，而具有一定特征的树(有序、平衡)可以很好中和两者特点，插入删除查询都比较快。</p>
+<p>要想明白红黑树，就要从其起源开始说，红黑树本质是一个弱平衡的二叉搜索树。</p>
+<p>先来说最普通的二叉搜索树，二叉搜索树是在普通的二叉树上增加了一个要求，简单来讲就是一个节点的左子树(如果有)中所有元素都要小于该节点，节点的右子树(如果有)中所有元素都要大于该节点，并且树中没有相同的值，这样一个二叉树就是二叉搜索树，也叫有序二叉树、排序二叉树。<br><img src="https://s2.ax1x.com/2019/12/26/lEneG8.jpg" alt="IMAGE"><br>这样的一棵树查找时理想状态下最多只需要比较树中一半的节点，可以将时间复杂度降为log(N)级别,插入时无需操作其他节点，只需要改变一下指针。<br>但是这种数据结构存在退化的问题，当一颗二叉搜索树中每个节点都比其父节点大，就会导致该树退化为线性表，导致其失去了log(N)的查询效率。<br><img src="https://s2.ax1x.com/2019/12/26/lEnmRS.jpg" alt="IMAGE"></p>
+<p>为了解决这个问题，人们发明了自平衡二叉搜索树(AVL)，总而言之就是在二叉搜索树的基础上又加了一个要求，树中任一一个节点的左右子树高度差 &lt;= 1，这样保证了树不会退化，查找效率一直保证为log(n)。为了保证树的平衡，需要在插入时根据树的不同状态进行”旋转”操作，以保证插入新的节点后，树仍然是平衡的。<br>但是由于这货为了保证严格的平衡，插入时有左旋、右旋、左右旋、右左旋四种可能的操作，因此在代码实现上比较复杂，插入时的效率略低</p>
+<p>so，为了解决掉树的失衡退化问题，而又不采用严格平衡的AVL树导致插入效率较低，人们又在想新的数据结构。<br>对于树的失衡问题，本质上是因为 树 无法自己选择 新节点的位置 的权利，这是由搜索树左右子树必须大于/小于根节点内的特性决定的，也就是说对于一般的搜索树，一个新插入的节点，与根节点进行比较后，就会自动进入到子树中，与子树的根节点比较后又会自动进入到子树的子树 ， 最终得到一个确定的位置，树是无法自己分配节点位置，进而导致了树的失衡退化。因此要解决这个问题可以从 赋予 树 决定节点位置的权利 下手。 树虽然无法决定 新插入节点 离开的方向（去往左子树 或是 右子树），但可以赋予树 让节点暂时留下来的能力，大佬们设计出了一种叫做2-3树的数据结构。<br><img src="https://s2.ax1x.com/2019/12/26/lEnnxg.jpg" alt="IMAGE"></p>
+<p>2-3树新加入了 一种叫做 3节点的东西，3-节点拥有两个值，三个子树，左子树所有值小于第一个值，中间的子树所有值介于两值之间，右子树所有值大于第二个值。简而言之就是这个节点内可以有两个值，拥有三个子树，3-节点的出现让树除了可以安排新节点到他应该所在的子树中去以外，还可以选择暂时缓存下该节点，放到3-节点自己手里。</p>
+<p>其插入流程可以概述为 先将新节点沉到最底部的叶子节点，如果该节点是一个2-节点，还可以存放一个节点，那么久存放起来，如果该节点是一个3-节点，没有空间存放了，那么就进行分裂操作，分裂操作是指将3-节点的中间值 向上挪动，如果父节点是2-节点，则容纳下分裂的节点，如果父节点是3-节点，则父节点继续分裂。</p>
+<p>虽然这种数据结构很好的解决了平衡以及维护平衡的效率问题，但无奈其实现比较复杂，需要维护两种的节点的数据结构，实现该树需要大量的代码，不易维护。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/10/搭建Electron-React应用/" rel="next" title="搭建Electron+React应用">
+                <i class="fa fa-chevron-left"></i> 搭建Electron+React应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Leehaoze</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leehaoze</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

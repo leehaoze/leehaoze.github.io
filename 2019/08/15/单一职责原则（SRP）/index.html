@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="设计模式,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="定义There should never be more than one reason for a class to change.一个类应当只有一个引起其变化的原因. 解释 WHAT这里的变化是指 类的代码发生了改变，反推一下，类的代码发生了改变也就意味着其功能上会发生变化，而单一职责原则是指类发生改变的原因只能有一个，也就意味着类承担的功能或者说是职责应当只有一个。  一个类只负责一件(一类">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单一职责原则（SRP）">
+<meta property="og:url" content="http://leehaoze.com/2019/08/15/单一职责原则（SRP）/index.html">
+<meta property="og:site_name" content="Leehaoze&#39;s blog">
+<meta property="og:description" content="定义There should never be more than one reason for a class to change.一个类应当只有一个引起其变化的原因. 解释 WHAT这里的变化是指 类的代码发生了改变，反推一下，类的代码发生了改变也就意味着其功能上会发生变化，而单一职责原则是指类发生改变的原因只能有一个，也就意味着类承担的功能或者说是职责应当只有一个。  一个类只负责一件(一类">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-26T11:47:02.714Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="单一职责原则（SRP）">
+<meta name="twitter:description" content="定义There should never be more than one reason for a class to change.一个类应当只有一个引起其变化的原因. 解释 WHAT这里的变化是指 类的代码发生了改变，反推一下，类的代码发生了改变也就意味着其功能上会发生变化，而单一职责原则是指类发生改变的原因只能有一个，也就意味着类承担的功能或者说是职责应当只有一个。  一个类只负责一件(一类">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://leehaoze.com/2019/08/15/单一职责原则（SRP）/">
+
+
+
+
+
+  <title>单一职责原则（SRP） | Leehaoze's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leehaoze's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Code&Life</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/单一职责原则（SRP）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">单一职责原则（SRP）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T19:28:49+08:00">
+                2019-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p><code>There should never be more than one reason for a class to change.</code><br><code>一个类应当只有一个引起其变化的原因.</code></p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><ul>
+<li>WHAT<br>这里的变化是指 <strong>类的代码发生了改变</strong>，反推一下，类的代码发生了改变也就意味着其功能上会发生变化，而<strong>单一职责原则</strong>是指类发生改变的原因只能有一个，也就意味着类承担的功能或者说是职责应当只有一个。</li>
+</ul>
+<p><strong>一个类只负责一件(一类)事情的逻辑，只有这个事情的逻辑发生变化 才去修改这个类</strong>s</p>
+<ul>
+<li>WHY<br>为什么要有这样的限制呢？可以想一下一个类负责了两件事情，当你修改了其中一件事情的逻辑时，就有可能会影响到另外的事情，可能你只是改了一下<code>手机类</code>的<code>上网</code>功能，但改完后发现<code>手机类</code>不能打电话了，可以拓展想象一下，你的代码中有一个万能类，你改了他的一个功能直接导致万能类GG了，你的服务直接挂了。</li>
+</ul>
+<p><strong>如果不遵循单一职责原则，就会导致你的代码中一个微小的改动都会引起整个服务的变化。</strong></p>
+<ul>
+<li>How</li>
+</ul>
+<p><strong>不要让你的对象成为上帝对象，他无所不知，无所不能</strong><br><strong>不要让别人猜测你的方法/类可能是用来处理什么逻辑的</strong></p>
+<ul>
+<li>具体的做法<br>我们在开发中，都会或多或少的自觉遵守这个准则。开发的对象，要尽可能的不了解其它事情的逻辑，只知道自己要处理的事情的逻辑，他不应该成为一个上帝对象，知道其它的事情的流程。<br>但这个准则很容易被打破是由于<strong>职责扩散</strong>，这个稍后再提</li>
+<li>职责的划分<br>虽然这条准则说描述的是一个对象，但这个范围可大可小，往小的说，一个函数只具有一个功能，这叫单一职责，往大的说，<code>Spring</code>中的<code>Controller</code>、<code>Service</code>、<code>Dao</code>每一层也都只负责路由、服务、数据交互，这也叫单一职责，所以在实际开发应用中，不要只死抠一个类应当只有一个功能。<br>所以说不要生搬硬套对类的单一职责要求从而导致类的数量爆炸，而是要适当选择单一职责的范围，对一个方法实施、或是对同层类实施，或是在恰当的时机对类实施</li>
+</ul>
+<h1 id="职责扩散"><a href="#职责扩散" class="headerlink" title="职责扩散"></a>职责扩散</h1><p>一般在开发初期的时候，大家写的代码基本都是满足单一职责的，但随着开发维护的脚本，项目变的越来越不可维护，这里主要是由于后期的开发维护中，我们的需求都会有说变化，就导致了某些类的职责变的更细化，原先负责职责T，现在要负责职责T1，T2了，而开发者考虑到拆分两个类的动作略大，就在原有类的基础上加以修改，使其能够承担两个职责了，就这样导致类的职责越来越多，越来越不可维护。这种由于某些原因导致类的职责被细分为多个，称为职责扩散</p>
+<h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>通过应用单一职责原则，我们可以有以下几点收益：</p>
+<ul>
+<li>降低类的复杂度<br>不会出现万能的上帝类，也就不会有一个长达几百上千行的类代码了</li>
+<li>提高类的可读性和可维护性<br>由于单个类的职责单一性，代码将会很好的阅读，同时修改代码时，也不会担心影响到其他的地方，确保只修改这一出代码即可，并且不回带来负面影响</li>
+<li>降低业务耦合度<br>类和类之间职责有着清楚的划分，既方便了阅读，也降低了类之间的耦合度，修改业务代码是只需要关注一个点即可，不用关注整个业务。</li>
+</ul>
+<h1 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h1><p>一个比较好的实际应用莫过于MVC模型了，三层各自负责各自的事情，很具体的例子并不是特别的好举，这里先留一个坑，将来如果有遇到很好的实际应用再来补充</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jaune162.com/article/details/d9fe6f85.html" target="_blank" rel="noopener">设计原则之–单一职责原则（Single Responsibility Principle, SRP）</a><br><a href="https://blog.csdn.net/zhengzhb/article/details/7278174" target="_blank" rel="noopener">设计模式六大原则（1）：单一职责原则</a><br><a href="https://github.com/onlyliuxin/coding2017/issues/278" target="_blank" rel="noopener">关于单一职责的讨论</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/15/Spring-Boot多环境配置/" rel="next" title="Spring Boot多环境配置">
+                <i class="fa fa-chevron-left"></i> Spring Boot多环境配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/19/Spring使用分页查插件/" rel="prev" title="Spring使用分页查插件">
+                Spring使用分页查插件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Leehaoze</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#定义"><span class="nav-number">1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">2.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#职责扩散"><span class="nav-number">3.</span> <span class="nav-text">职责扩散</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#作用"><span class="nav-number">4.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实际应用"><span class="nav-number">5.</span> <span class="nav-text">实际应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leehaoze</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
