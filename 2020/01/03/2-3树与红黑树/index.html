@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="排序,">
+  <meta name="keywords" content="数据结构,">
 
 
 
@@ -79,18 +79,27 @@
 
 
 
-<meta name="description" content="思想选择排序是最原始的排序方式，说白了就是遍历找到最大值 放到末尾，然后从剩下的数中找到剩下数中的最大值，再放到末尾已排好序的部分的起始位置中（也可以每次遍历找最小值）。 #时间复杂度选择排序不区分情况，直接就是遍历(n-1)趟，第i趟需要比较i趟的长度 - 1次，i趟的长度 = n - i + 1，可得第i趟需要比较n - i + 1 - 1 = n - i次，排序总比较次数为 $(n - 1)">
-<meta name="keywords" content="排序">
+<meta name="description" content="从2-3树到红黑树红黑树是这样定义的：  每个结点要么是红的要么是黑的。   根结点是黑的。   每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。   如果一个结点是红的，那么它的两个儿子都是黑的。   对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。   一颗常见的红黑树长这样 如果你把红节点拉平变成这样  你会发现这就是一颗 2-3树 红色节点表示">
+<meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="选择排序">
-<meta property="og:url" content="http://leehaoze.com/2019/08/08/选择排序/index.html">
+<meta property="og:title" content="2-3树与红黑树">
+<meta property="og:url" content="http://leehaoze.com/2020/01/03/2-3树与红黑树/index.html">
 <meta property="og:site_name" content="Leehaoze&#39;s blog">
-<meta property="og:description" content="思想选择排序是最原始的排序方式，说白了就是遍历找到最大值 放到末尾，然后从剩下的数中找到剩下数中的最大值，再放到末尾已排好序的部分的起始位置中（也可以每次遍历找最小值）。 #时间复杂度选择排序不区分情况，直接就是遍历(n-1)趟，第i趟需要比较i趟的长度 - 1次，i趟的长度 = n - i + 1，可得第i趟需要比较n - i + 1 - 1 = n - i次，排序总比较次数为 $(n - 1)">
+<meta property="og:description" content="从2-3树到红黑树红黑树是这样定义的：  每个结点要么是红的要么是黑的。   根结点是黑的。   每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。   如果一个结点是红的，那么它的两个儿子都是黑的。   对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。   一颗常见的红黑树长这样 如果你把红节点拉平变成这样  你会发现这就是一颗 2-3树 红色节点表示">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-26T11:47:02.715Z">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laONsx.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laOOmV.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laOzY4.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laXClR.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laXP61.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laXETO.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laXete.jpg">
+<meta property="og:image" content="https://s2.ax1x.com/2020/01/03/laXZkD.jpg">
+<meta property="og:updated_time" content="2020-01-03T13:22:31.174Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="选择排序">
-<meta name="twitter:description" content="思想选择排序是最原始的排序方式，说白了就是遍历找到最大值 放到末尾，然后从剩下的数中找到剩下数中的最大值，再放到末尾已排好序的部分的起始位置中（也可以每次遍历找最小值）。 #时间复杂度选择排序不区分情况，直接就是遍历(n-1)趟，第i趟需要比较i趟的长度 - 1次，i趟的长度 = n - i + 1，可得第i趟需要比较n - i + 1 - 1 = n - i次，排序总比较次数为 $(n - 1)">
+<meta name="twitter:title" content="2-3树与红黑树">
+<meta name="twitter:description" content="从2-3树到红黑树红黑树是这样定义的：  每个结点要么是红的要么是黑的。   根结点是黑的。   每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。   如果一个结点是红的，那么它的两个儿子都是黑的。   对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。   一颗常见的红黑树长这样 如果你把红节点拉平变成这样  你会发现这就是一颗 2-3树 红色节点表示">
+<meta name="twitter:image" content="https://s2.ax1x.com/2020/01/03/laONsx.jpg">
 
 
 
@@ -120,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://leehaoze.com/2019/08/08/选择排序/">
+  <link rel="canonical" href="http://leehaoze.com/2020/01/03/2-3树与红黑树/">
 
 
 
 
 
-  <title>选择排序 | Leehaoze's blog</title>
+  <title>2-3树与红黑树 | Leehaoze's blog</title>
   
 
 
@@ -233,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/08/选择排序/">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2020/01/03/2-3树与红黑树/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leehaoze">
@@ -250,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">选择排序</h1>
+          <h1 class="post-title" itemprop="name headline">2-3树与红黑树</h1>
         
 
         <div class="post-meta">
@@ -262,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-08T14:45:42+08:00">
-                2019-08-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T21:18:23+08:00">
+                2020-01-03
               </time>
             
 
@@ -300,11 +309,37 @@
       
 
       
-        <h1 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h1><p>选择排序是最原始的排序方式，说白了就是遍历找到最大值 放到末尾，然后从剩下的数中找到剩下数中的最大值，再放到末尾已排好序的部分的起始位置中（也可以每次遍历找最小值）。</p>
-<p>#时间复杂度<br>选择排序不区分情况，直接就是遍历<code>(n-1)</code>趟，第<code>i</code>趟需要比较<code>i趟的长度 - 1</code>次，<code>i趟的长度 = n - i + 1</code>，可得第<code>i</code>趟需要比较<code>n - i + 1 - 1 = n - i</code>次，排序总比较次数为 $(n - 1) + (n - 2) +\dots+(n - (n - 1)) = \frac{(n-1)*n}{2}$次 时间复杂度可以确定为$O(n^2)$</p>
-<p>#Code</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">void selectSort(int nums[], int length);</span><br><span class="line">void selectSortMin(int nums[], int length);</span><br><span class="line">void swap(int nums[], int i, int j);</span><br><span class="line">void printArray(int *nums, int length);</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int nums[] = &#123;10, 21, 22, 35, 39, 18, 30, 89&#125;;</span><br><span class="line">    int length = sizeof(nums) / sizeof(nums[0]);</span><br><span class="line">    selectSortMin(nums, length);</span><br><span class="line">    printArray(nums, length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//每次遍历选择最大值放到末尾</span><br><span class="line">void selectSort(int nums[], int length)</span><br><span class="line">&#123;</span><br><span class="line">    //这里i代表趟数 也代表着已归位的数据个数</span><br><span class="line">    //只需要遍历 length - 1次就可以了，每次遍历都会选最大值放到末尾，最后一次遍历时剩下的那一个肯定是整个数组中的最小值</span><br><span class="line">    for (int i = 0; i &lt; length - 1; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        //最大值下标 每次都用第一个数做最大值</span><br><span class="line">        int maxIndex = 0;</span><br><span class="line">        for (int j = 1; j &lt; length - i; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            if (nums[maxIndex] &lt; nums[j])</span><br><span class="line">            &#123;</span><br><span class="line">                maxIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, maxIndex, length - i - 1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//每次遍历选择最小值放到开头</span><br><span class="line">void selectSortMin(int nums[], int length)</span><br><span class="line">&#123;</span><br><span class="line">    //这里i代表趟数 也代表着已归位的数据个数</span><br><span class="line">    //只需要遍历 length - 1次就可以了，每次遍历都会选最小值放到开头，最后一次遍历时剩下的那一个肯定是整个数组中的最大值</span><br><span class="line">    for (int i = 0; i &lt; length - 1; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        int minIndex = i;</span><br><span class="line">        for (int j = i + 1; j &lt; length; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            if (nums[minIndex] &gt; nums[j])</span><br><span class="line">            &#123;</span><br><span class="line">                minIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, minIndex, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void swap(int nums[], int i, int j)</span><br><span class="line">&#123;</span><br><span class="line">    int temp = nums[i];</span><br><span class="line">    nums[i] = nums[j];</span><br><span class="line">    nums[j] = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void printArray(int *nums, int length)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;%d &quot;, nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+        <h1 id="从2-3树到红黑树"><a href="#从2-3树到红黑树" class="headerlink" title="从2-3树到红黑树"></a>从2-3树到红黑树</h1><p>红黑树是这样定义的：</p>
+<ul>
+<li>每个结点要么是红的要么是黑的。  </li>
+<li>根结点是黑的。  </li>
+<li>每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。  </li>
+<li>如果一个结点是红的，那么它的两个儿子都是黑的。  </li>
+<li>对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。 </li>
+</ul>
+<p>一颗常见的红黑树长这样<br><img src="https://s2.ax1x.com/2020/01/03/laONsx.jpg" alt="laONsx.jpg"></p>
+<p>如果你把红节点拉平变成这样</p>
+<p><img src="https://s2.ax1x.com/2020/01/03/laOOmV.jpg" alt="laOOmV.jpg"></p>
+<p>你会发现这就是一颗 2-3树</p>
+<p>红色节点表示该节点与其父亲组合成为一个3-节点。我们再来看一下红黑树的定义中的限制。</p>
+<p>第一条说明红黑树中有两种不同类型的节点，红节点-黑节点，红节点的含义之前说过了。 另外值得注意的是红色节点是一直在黑色节点的左儿子上，这样做也是为了方便判断</p>
+<p>第二条是要求根节点必须为黑色，因为红色节点代表着红色节点与父亲组成一个3-节点，而根节点是没有父亲的，因此根节点必须是黑色。</p>
+<p>第三条要求所有叶子节点是黑色，方便我们代码中去识别没有儿子的节点</p>
+<p>第四条 亦是对应着2-3树的性质，如果一个红色节点的儿子也是红色节点，那么他们就组成了一个2-3-4树，2-3-4树就有另外的插入删除方式了，因此有这一条定义限制红黑树必须对应一颗标准的2-3树</p>
+<p>第五条 也叫 红黑树的黑高一致，因为黑色节点对应着2-3树中的一个 2-节点或3-节点，红色节点只是3-节点的表达方式的组成部分。2-3树是完美平衡的树，他的子树也都是一颗完美平衡的树，因此对于每个子树的根节点而言，到达左右子树的叶子节点的路径长度肯定是一样的，因此红黑树中有这样一条性质 保证了红黑树对应2-3树的完美平衡特点。</p>
+<h1 id="红黑树的查询"><a href="#红黑树的查询" class="headerlink" title="红黑树的查询"></a>红黑树的查询</h1><p>红黑树也是一颗二叉搜索树，因此其查询方式与二叉搜索树的查询方式一致</p>
+<h1 id="红黑树的插入"><a href="#红黑树的插入" class="headerlink" title="红黑树的插入"></a>红黑树的插入</h1><p>对于2-3的插入操作而言，有一个分裂节点的操作，也就是在新插入的节点沉入底部后，根据节点的类型进行分裂操作，相对应的红黑树也有此类操作，称为<code>反色</code><br><img src="https://s2.ax1x.com/2020/01/03/laOzY4.jpg" alt="laOzY4.jpg"><br>对比 2-3树<br><img src="https://s2.ax1x.com/2020/01/03/laXClR.jpg" alt="laXClR.jpg"></p>
+<p>另外红黑树还有相对应的旋转操作：左旋和右旋<br><img src="https://s2.ax1x.com/2020/01/03/laXP61.jpg" alt="laXP61.jpg"></p>
+<p>通过这两种（旋转、分裂）操作，我们可以将模拟2-3树的红黑树实现与2-3树一样的操作。</p>
+<p>在2-3树中，我们将新插入的节点沉入底部，与最底部的节点合并，随后再进行其他操作。为了表示合并，我们将新插入的节点用红色节点表示，随后再对其进行调整。大概分为几种情况</p>
+<ul>
+<li><p>插入后 某个黑色节点的 左儿子是黑色，右儿子是黑色，我们要将红色节点旋转过来。<br><img src="https://s2.ax1x.com/2020/01/03/laXETO.jpg" alt="laXETO.jpg"></p>
+</li>
+<li><p>插入后，形成了4-节点<br>我们直接利用反色分解<br><img src="https://s2.ax1x.com/2020/01/03/laXete.jpg" alt="laXete.jpg"></p>
+</li>
+<li><p>插入后，有连续的红色节点<br>利用旋转转为情况2，再按照情况2操作<br><img src="https://s2.ax1x.com/2020/01/03/laXZkD.jpg" alt="laXZkD.jpg"></p>
+</li>
+</ul>
 
       
     </div>
@@ -322,7 +357,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/排序/" rel="tag"># 排序</a>
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
           
         </div>
       
@@ -335,8 +370,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/08/阿里一面/" rel="next" title="阿里一面">
-                <i class="fa fa-chevron-left"></i> 阿里一面
+              <a href="/2019/12/26/首页为什么挂了/" rel="next" title="首页为什么挂了">
+                <i class="fa fa-chevron-left"></i> 首页为什么挂了
               </a>
             
           </div>
@@ -344,10 +379,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/08/冒泡排序/" rel="prev" title="冒泡排序">
-                冒泡排序 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -479,7 +510,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#思想"><span class="nav-number">1.</span> <span class="nav-text">思想</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#从2-3树到红黑树"><span class="nav-number">1.</span> <span class="nav-text">从2-3树到红黑树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#红黑树的查询"><span class="nav-number">2.</span> <span class="nav-text">红黑树的查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#红黑树的插入"><span class="nav-number">3.</span> <span class="nav-text">红黑树的插入</span></a></li></ol></div>
             
 
           </div>

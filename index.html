@@ -229,6 +229,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2020/01/03/2-3树与红黑树/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/03/2-3树与红黑树/" itemprop="url">2-3树与红黑树</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T21:18:23+08:00">
+                2020-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="从2-3树到红黑树"><a href="#从2-3树到红黑树" class="headerlink" title="从2-3树到红黑树"></a>从2-3树到红黑树</h1><p>红黑树是这样定义的：</p>
+<ul>
+<li>每个结点要么是红的要么是黑的。  </li>
+<li>根结点是黑的。  </li>
+<li>每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。  </li>
+<li>如果一个结点是红的，那么它的两个儿子都是黑的。  </li>
+<li>对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。 </li>
+</ul>
+<p>一颗常见的红黑树长这样<br><img src="https://s2.ax1x.com/2020/01/03/laONsx.jpg" alt="laONsx.jpg"></p>
+<p>如果你把红节点拉平变成这样</p>
+<p><img src="https://s2.ax1x.com/2020/01/03/laOOmV.jpg" alt="laOOmV.jpg"></p>
+<p>你会发现这就是一颗 2-3树</p>
+<p>红色节点表示该节点与其父亲组合成为一个3-节点。我们再来看一下红黑树的定义中的限制。</p>
+<p>第一条说明红黑树中有两种不同类型的节点，红节点-黑节点，红节点的含义之前说过了。 另外值得注意的是红色节点是一直在黑色节点的左儿子上，这样做也是为了方便判断</p>
+<p>第二条是要求根节点必须为黑色，因为红色节点代表着红色节点与父亲组成一个3-节点，而根节点是没有父亲的，因此根节点必须是黑色。</p>
+<p>第三条要求所有叶子节点是黑色，方便我们代码中去识别没有儿子的节点</p>
+<p>第四条 亦是对应着2-3树的性质，如果一个红色节点的儿子也是红色节点，那么他们就组成了一个2-3-4树，2-3-4树就有另外的插入删除方式了，因此有这一条定义限制红黑树必须对应一颗标准的2-3树</p>
+<p>第五条 也叫 红黑树的黑高一致，因为黑色节点对应着2-3树中的一个 2-节点或3-节点，红色节点只是3-节点的表达方式的组成部分。2-3树是完美平衡的树，他的子树也都是一颗完美平衡的树，因此对于每个子树的根节点而言，到达左右子树的叶子节点的路径长度肯定是一样的，因此红黑树中有这样一条性质 保证了红黑树对应2-3树的完美平衡特点。</p>
+<h1 id="红黑树的查询"><a href="#红黑树的查询" class="headerlink" title="红黑树的查询"></a>红黑树的查询</h1><p>红黑树也是一颗二叉搜索树，因此其查询方式与二叉搜索树的查询方式一致</p>
+<h1 id="红黑树的插入"><a href="#红黑树的插入" class="headerlink" title="红黑树的插入"></a>红黑树的插入</h1><p>对于2-3的插入操作而言，有一个分裂节点的操作，也就是在新插入的节点沉入底部后，根据节点的类型进行分裂操作，相对应的红黑树也有此类操作，称为<code>反色</code><br><img src="https://s2.ax1x.com/2020/01/03/laOzY4.jpg" alt="laOzY4.jpg"><br>对比 2-3树<br><img src="https://s2.ax1x.com/2020/01/03/laXClR.jpg" alt="laXClR.jpg"></p>
+<p>另外红黑树还有相对应的旋转操作：左旋和右旋<br><img src="https://s2.ax1x.com/2020/01/03/laXP61.jpg" alt="laXP61.jpg"></p>
+<p>通过这两种（旋转、分裂）操作，我们可以将模拟2-3树的红黑树实现与2-3树一样的操作。</p>
+<p>在2-3树中，我们将新插入的节点沉入底部，与最底部的节点合并，随后再进行其他操作。为了表示合并，我们将新插入的节点用红色节点表示，随后再对其进行调整。大概分为几种情况</p>
+<ul>
+<li><p>插入后 某个黑色节点的 左儿子是黑色，右儿子是黑色，我们要将红色节点旋转过来。<br><img src="https://s2.ax1x.com/2020/01/03/laXETO.jpg" alt="laXETO.jpg"></p>
+</li>
+<li><p>插入后，形成了4-节点<br>我们直接利用反色分解<br><img src="https://s2.ax1x.com/2020/01/03/laXete.jpg" alt="laXete.jpg"></p>
+</li>
+<li><p>插入后，有连续的红色节点<br>利用旋转转为情况2，再按照情况2操作<br><img src="https://s2.ax1x.com/2020/01/03/laXZkD.jpg" alt="laXZkD.jpg"></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/12/26/首页为什么挂了/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1403,127 +1553,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/Spring-Boot多环境配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leehaoze">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leehaoze's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/15/Spring-Boot多环境配置/" itemprop="url">Spring Boot多环境配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T14:30:51+08:00">
-                2019-08-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>项目开发中，无可避免的需要正式、开发、测试环境等，不同环境的数据源之类的可能会不一样，因此需要区分不同环境下的配置，Spring Boot提供了这样的支持</p>
-<p>在项目的<code>resource</code>文件夹下，Spring默认读取<code>application.properties</code>文件，但还可以建立<code>application-dev.properties</code>、<code>application-test.properties</code>、<code>application-prod.properties</code>三个不同场景(开发、测试、生产)的配置文件，然后再默认的<code>application.properties</code>中，选择激活使用哪个环境即可，在配置文件中配置<code>spring.properties.active=dev</code>即可使用开发环境</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1574,7 +1603,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1633,7 +1662,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
