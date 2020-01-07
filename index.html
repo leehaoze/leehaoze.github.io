@@ -229,6 +229,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2020/01/07/搭建SpringBoot多模块应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/07/搭建SpringBoot多模块应用/" itemprop="url">搭建SpringBoot多模块应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-07T15:00:36+08:00">
+                2020-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h1><ul>
+<li>新建项目文件夹<br><code>mkdir ~/IdeaProjects/spring-boot-behind</code></li>
+<li>在Idea中打开<br>打开<code>Intellij Idea</code>,选择<code>Open</code>，打开刚刚新建的文件夹</li>
+<li>添加<code>Maven</code><br>右键左侧导航栏中的<strong>项目名</strong>，选择<code>Add New Framewrok</code><br><img src="http://image.leehaoze.cn/529DFD82AC31FFF5AEB1FD51F6BF3E06.jpg" alt="IMAGE"><br>在弹窗中左侧导航栏，选择<code>Maven</code><br><img src="http://image.leehaoze.cn/130F3F2701CF0242C048152630E27FC1.jpg" alt><br>点击<code>OK</code>,填写一些信息即可。</li>
+<li>添加<code>Spring</code>依赖<ul>
+<li>编辑<code>pom.xml</code>，添加<code>packaging</code>条目<code>&lt;packaging&gt;pom&lt;/packaging&gt;</code></li>
+<li>再引入<code>Spring</code>的<strong>pom parent</strong><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.7.RELEASE&lt;/version&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line">- 删除生成的`src`文件夹</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="添加base子模块"><a href="#添加base子模块" class="headerlink" title="添加base子模块"></a>添加base子模块</h1><p>base模块如其名，都是一些基础的组件，比如异常处理、拦截器、过滤器、切片、返回结果封装、通用工具类等</p>
+<ul>
+<li><p>新建<code>Module</code><br>右击左侧导航栏项目名，选择<code>New-&gt;Module...</code><br><img src="http://image.leehaoze.cn/B573462E755842F0D6F2A6A3FEC05ACC.jpg" alt><br>在弹窗中选择<code>Maven</code>，点击<code>Next</code>，在<code>Name</code>中填写<code>base</code>，点击Finish<br><img src="http://image.leehaoze.cn/87444A44B9D1A0A65917B6A814DBCE0D.jpg" alt></p>
+</li>
+<li><p>设置版本<br>子模块的版本号可以单独维护，也可以跟随父模块，这里为了统一，所有子模块都跟随父模块的版本，编辑<code>pom.xml</code>添加一条<code>version</code>条目即可<br><img src="http://image.leehaoze.cn/4CFF941A1277547D84D8B602BDEBD6E9.jpg" alt></p>
+</li>
+<li><p>引入依赖<br>整个项目都要用到的依赖都是在这个模块里引入，比如：<code>spring-boot-start</code>、<code>lombok</code>、<code>fastjson</code>等<br>编辑<code>base/pom.xml</code></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;!-- Spring Boot Starter--&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!-- json库 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.2.59&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!-- 提供Getter Setter注解等 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;lombok&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.18.8&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建包文件夹<br>  在<code>base/src/main/java</code>下新建与<code>group ID</code>相同的包<br>  <img src="http://image.leehaoze.cn/B0D46510706DA90D0A0DA949C34EE4D0.jpg" alt><br>  <img src="http://image.leehaoze.cn/7E3AAF6527DEEA4B11F0C9109FED3507.jpg" alt></p>
+</li>
+<li><p>新建几个常用文件夹后大概长这样<br><img src="http://image.leehaoze.cn/F37546B6B939312934F2552522C7A28C.jpg" alt></p>
+</li>
+</ul>
+<h1 id="添加bean子模块"><a href="#添加bean子模块" class="headerlink" title="添加bean子模块"></a>添加bean子模块</h1><p>bean模块内主要是一些常量、实体类、DTO类</p>
+<ul>
+<li><p>新建<code>Module</code><br>再新建一个名为<code>bean</code>的<code>Module</code></p>
+</li>
+<li><p>引入依赖（记得在<code>pom.xml</code>里添加此模块的版本号跟随父模块）<br>bean模块依赖base模块即可，如果有其他关于实体类的依赖，可以在此模块引入，只用于此模块。比如我在这里引入了谷歌的<code>guava</code>包，使用其中的<code>Convert</code>实现实体类与DTO类的转换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.leehaoze&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;base&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;parent.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建包文件夹</p>
+</li>
+<li><p>新建几个常用文件夹<br><img src="http://image.leehaoze.cn/20200107170723.png" alt></p>
+</li>
+</ul>
+<h1 id="添加dao子模块"><a href="#添加dao子模块" class="headerlink" title="添加dao子模块"></a>添加dao子模块</h1><p>dao模块内是数据操作，包括与数据库、redis等数据交互都在此模块，包括<code>MyBatis</code>的<code>Mapper</code>也是在此模块</p>
+<ul>
+<li><p>新建<code>Module</code><br>新建一个名为<code>dao</code>的<code>Module</code></p>
+</li>
+<li><p>引入依赖（记得在<code>pom.xml</code>里添加此模块的版本号跟随父模块）<br><code>dao</code>模块依赖于<code>bean</code>模块，初次之外使用<code>MyBatis</code>的话，还要在此模块 引入<code>MyBatis</code>相关依赖。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;artifactId&gt;dao&lt;/artifactId&gt;</span><br><span class="line"></span><br><span class="line">&lt;version&gt;$&#123;parent.version&#125;&lt;/version&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;!-- bean --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.leehaoze&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;bean&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;parent.version&#125;&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!-- mybatis --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.0&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!-- 分页工具 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;pagehelper-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;1.2.3&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">    &lt;!-- MySQL 连接驱动 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;8.0.17&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建包文件夹</p>
+</li>
+<li><p>在包下新建<code>mapper</code>文件夹</p>
+</li>
+</ul>
+<h1 id="添加manager子模块"><a href="#添加manager子模块" class="headerlink" title="添加manager子模块"></a>添加manager子模块</h1><p>manager模块主要负责对数据的加工处理，实现DTO类与实体类的互转、数据的组合查询等。</p>
+<ul>
+<li>新建<code>Module</code><br>新建一个名为<code>manager</code>的<code>Module</code></li>
+<li>引入依赖（记得在<code>pom.xml</code>里添加此模块的版本号跟随父模块）<br><code>manager</code>依赖于<code>dao</code>模块，</li>
+<li>新建包文件夹</li>
+<li>在报下新建<code>manager</code>文件夹</li>
+</ul>
+<h1 id="添加service子模块"><a href="#添加service子模块" class="headerlink" title="添加service子模块"></a>添加service子模块</h1><p>service模块主要负责业务实现，包括参数的校验、业务逻辑处理等。</p>
+<ul>
+<li>新建<code>Module</code><br>新建一个名为<code>service</code>的<code>Module</code></li>
+<li>引入依赖（记得在<code>pom.xml</code>里添加此模块的版本号跟随父模块）<br><code>service</code>依赖于<code>manager</code>子模块</li>
+<li>新建包文件夹</li>
+<li>在包下新建<code>service</code>文件夹</li>
+</ul>
+<h1 id="添加web子模块"><a href="#添加web子模块" class="headerlink" title="添加web子模块"></a>添加web子模块</h1><p>web子模块主要是controller以及程序入口</p>
+<ul>
+<li><p>新建<code>Module</code><br>新建一个名为<code>web</code>的<code>Module</code></p>
+</li>
+<li><p>引入依赖（记得在<code>pom.xml</code>里添加此模块的版本号跟随父模块）<br><code>web</code>模块依赖于<code>service</code>模块<br>另外需要添加<code>build</code>插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新建包文件夹</p>
+</li>
+<li><p>在包下新建<code>controller</code>文件夹</p>
+</li>
+<li><p>创建应用入口</p>
+<ul>
+<li>在包下新建<code>MainApplication</code>类</li>
+<li>为类添加<code>@SpringBootApplication</code>注解</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication</span><br><span class="line">public class MainController &#123;</span><br><span class="line">  public static void main(String[] args) &#123;</span><br><span class="line">      SpringApplication.run(MainController.class, args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建<code>Spring-Boot</code>配置文件<br>在<code>web/src/main.java/resources</code>中新建<code>application.properties</code><br>配置数据库连接配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">spring.datasource.url=jdbc:mysql://你的数据库机器名:端口号/数据库名?useUnicode=true&amp;characterEncoding=gbk&amp;zeroDateTimeBehavior=convertToNull&amp;jdbcCompliantTruncation=false</span><br><span class="line"></span><br><span class="line">spring.datasource.username=账号</span><br><span class="line"></span><br><span class="line">spring.datasource.password=密码</span><br><span class="line"></span><br><span class="line">spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver</span><br><span class="line"></span><br><span class="line">mybatis.mapper-locations=classpath*:mapper/*.xml</span><br><span class="line"></span><br><span class="line">server.port=8293</span><br></pre></td></tr></table></figure>
+
+<p><em>注意配置中<code>mybatis.mapper-locations</code>配置项，该项值为`classpath</em>:mapper/<em>.xml`,第一个*代表在所有的包路径下都查找，不然的话只会在配置文件所在的包路径下查找</em></p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>打开<code>MainApplication</code>，可以看到IDEA在编辑区域左侧有一个绿色的小箭头，点击即可运行应用<br><img src="http://image.leehaoze.cn/E07737DD52103C03FC5A8B9A953A4A8F.jpg" alt></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2020/01/03/2-3树与红黑树/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1386,173 +1594,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/单一职责原则（SRP）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leehaoze">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leehaoze's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/15/单一职责原则（SRP）/" itemprop="url">单一职责原则（SRP）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T19:28:49+08:00">
-                2019-08-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p><code>There should never be more than one reason for a class to change.</code><br><code>一个类应当只有一个引起其变化的原因.</code></p>
-<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><ul>
-<li>WHAT<br>这里的变化是指 <strong>类的代码发生了改变</strong>，反推一下，类的代码发生了改变也就意味着其功能上会发生变化，而<strong>单一职责原则</strong>是指类发生改变的原因只能有一个，也就意味着类承担的功能或者说是职责应当只有一个。</li>
-</ul>
-<p><strong>一个类只负责一件(一类)事情的逻辑，只有这个事情的逻辑发生变化 才去修改这个类</strong>s</p>
-<ul>
-<li>WHY<br>为什么要有这样的限制呢？可以想一下一个类负责了两件事情，当你修改了其中一件事情的逻辑时，就有可能会影响到另外的事情，可能你只是改了一下<code>手机类</code>的<code>上网</code>功能，但改完后发现<code>手机类</code>不能打电话了，可以拓展想象一下，你的代码中有一个万能类，你改了他的一个功能直接导致万能类GG了，你的服务直接挂了。</li>
-</ul>
-<p><strong>如果不遵循单一职责原则，就会导致你的代码中一个微小的改动都会引起整个服务的变化。</strong></p>
-<ul>
-<li>How</li>
-</ul>
-<p><strong>不要让你的对象成为上帝对象，他无所不知，无所不能</strong><br><strong>不要让别人猜测你的方法/类可能是用来处理什么逻辑的</strong></p>
-<ul>
-<li>具体的做法<br>我们在开发中，都会或多或少的自觉遵守这个准则。开发的对象，要尽可能的不了解其它事情的逻辑，只知道自己要处理的事情的逻辑，他不应该成为一个上帝对象，知道其它的事情的流程。<br>但这个准则很容易被打破是由于<strong>职责扩散</strong>，这个稍后再提</li>
-<li>职责的划分<br>虽然这条准则说描述的是一个对象，但这个范围可大可小，往小的说，一个函数只具有一个功能，这叫单一职责，往大的说，<code>Spring</code>中的<code>Controller</code>、<code>Service</code>、<code>Dao</code>每一层也都只负责路由、服务、数据交互，这也叫单一职责，所以在实际开发应用中，不要只死抠一个类应当只有一个功能。<br>所以说不要生搬硬套对类的单一职责要求从而导致类的数量爆炸，而是要适当选择单一职责的范围，对一个方法实施、或是对同层类实施，或是在恰当的时机对类实施</li>
-</ul>
-<h1 id="职责扩散"><a href="#职责扩散" class="headerlink" title="职责扩散"></a>职责扩散</h1><p>一般在开发初期的时候，大家写的代码基本都是满足单一职责的，但随着开发维护的脚本，项目变的越来越不可维护，这里主要是由于后期的开发维护中，我们的需求都会有说变化，就导致了某些类的职责变的更细化，原先负责职责T，现在要负责职责T1，T2了，而开发者考虑到拆分两个类的动作略大，就在原有类的基础上加以修改，使其能够承担两个职责了，就这样导致类的职责越来越多，越来越不可维护。这种由于某些原因导致类的职责被细分为多个，称为职责扩散</p>
-<h1 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h1><p>通过应用单一职责原则，我们可以有以下几点收益：</p>
-<ul>
-<li>降低类的复杂度<br>不会出现万能的上帝类，也就不会有一个长达几百上千行的类代码了</li>
-<li>提高类的可读性和可维护性<br>由于单个类的职责单一性，代码将会很好的阅读，同时修改代码时，也不会担心影响到其他的地方，确保只修改这一出代码即可，并且不回带来负面影响</li>
-<li>降低业务耦合度<br>类和类之间职责有着清楚的划分，既方便了阅读，也降低了类之间的耦合度，修改业务代码是只需要关注一个点即可，不用关注整个业务。</li>
-</ul>
-<h1 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h1><p>一个比较好的实际应用莫过于MVC模型了，三层各自负责各自的事情，很具体的例子并不是特别的好举，这里先留一个坑，将来如果有遇到很好的实际应用再来补充</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.jaune162.com/article/details/d9fe6f85.html" target="_blank" rel="noopener">设计原则之–单一职责原则（Single Responsibility Principle, SRP）</a><br><a href="https://blog.csdn.net/zhengzhb/article/details/7278174" target="_blank" rel="noopener">设计模式六大原则（1）：单一职责原则</a><br><a href="https://github.com/onlyliuxin/coding2017/issues/278" target="_blank" rel="noopener">关于单一职责的讨论</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1603,7 +1644,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1625,7 +1666,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
