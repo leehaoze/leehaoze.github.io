@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Java,Spring,">
+  <meta name="keywords" content="Electron,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="项目开发中，无可避免的需要正式、开发、测试环境等，不同环境的数据源之类的可能会不一样，因此需要区分不同环境下的配置，Spring Boot提供了这样的支持 在项目的resource文件夹下，Spring默认读取application.properties文件，但还可以建立application-dev.properties、application-test.properties、applicati">
-<meta name="keywords" content="Java,Spring">
+<meta name="description" content="多进程的必要性开发一个桌面客户端应用，必然要面临一些场景需要通过多进程实现，比如需要进行非常重的计算，再比如需要异步的查询数据库，或者在后台需要建立socket通信。 Electron本身就分为两个进程：主进程和渲染进程，两个进程通过rpc互相通信，但是如果主进程阻塞，渲染进程也会阻塞，这就是为什么不要在主进程里执行重量级的数据运算等操作的原因。 so 如何在Electron里实现多进程目前来看有">
+<meta name="keywords" content="Electron">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spring Boot多环境配置">
-<meta property="og:url" content="http://leehaoze.com/2019/08/15/Spring-Boot多环境配置/index.html">
+<meta property="og:title" content="Electron下多进程的选择">
+<meta property="og:url" content="http://leehaoze.com/2020/01/15/Electron下多进程的选择/index.html">
 <meta property="og:site_name" content="Leehaoze&#39;s blog">
-<meta property="og:description" content="项目开发中，无可避免的需要正式、开发、测试环境等，不同环境的数据源之类的可能会不一样，因此需要区分不同环境下的配置，Spring Boot提供了这样的支持 在项目的resource文件夹下，Spring默认读取application.properties文件，但还可以建立application-dev.properties、application-test.properties、applicati">
+<meta property="og:description" content="多进程的必要性开发一个桌面客户端应用，必然要面临一些场景需要通过多进程实现，比如需要进行非常重的计算，再比如需要异步的查询数据库，或者在后台需要建立socket通信。 Electron本身就分为两个进程：主进程和渲染进程，两个进程通过rpc互相通信，但是如果主进程阻塞，渲染进程也会阻塞，这就是为什么不要在主进程里执行重量级的数据运算等操作的原因。 so 如何在Electron里实现多进程目前来看有">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-26T11:47:02.712Z">
+<meta property="og:updated_time" content="2020-01-15T15:59:53.695Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spring Boot多环境配置">
-<meta name="twitter:description" content="项目开发中，无可避免的需要正式、开发、测试环境等，不同环境的数据源之类的可能会不一样，因此需要区分不同环境下的配置，Spring Boot提供了这样的支持 在项目的resource文件夹下，Spring默认读取application.properties文件，但还可以建立application-dev.properties、application-test.properties、applicati">
+<meta name="twitter:title" content="Electron下多进程的选择">
+<meta name="twitter:description" content="多进程的必要性开发一个桌面客户端应用，必然要面临一些场景需要通过多进程实现，比如需要进行非常重的计算，再比如需要异步的查询数据库，或者在后台需要建立socket通信。 Electron本身就分为两个进程：主进程和渲染进程，两个进程通过rpc互相通信，但是如果主进程阻塞，渲染进程也会阻塞，这就是为什么不要在主进程里执行重量级的数据运算等操作的原因。 so 如何在Electron里实现多进程目前来看有">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://leehaoze.com/2019/08/15/Spring-Boot多环境配置/">
+  <link rel="canonical" href="http://leehaoze.com/2020/01/15/Electron下多进程的选择/">
 
 
 
 
 
-  <title>Spring Boot多环境配置 | Leehaoze's blog</title>
+  <title>Electron下多进程的选择 | Leehaoze's blog</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/Spring-Boot多环境配置/">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2020/01/15/Electron下多进程的选择/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Leehaoze">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Spring Boot多环境配置</h1>
+          <h1 class="post-title" itemprop="name headline">Electron下多进程的选择</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-15T14:30:51+08:00">
-                2019-08-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-15T23:59:36+08:00">
+                2020-01-15
               </time>
             
 
@@ -300,8 +300,25 @@
       
 
       
-        <p>项目开发中，无可避免的需要正式、开发、测试环境等，不同环境的数据源之类的可能会不一样，因此需要区分不同环境下的配置，Spring Boot提供了这样的支持</p>
-<p>在项目的<code>resource</code>文件夹下，Spring默认读取<code>application.properties</code>文件，但还可以建立<code>application-dev.properties</code>、<code>application-test.properties</code>、<code>application-prod.properties</code>三个不同场景(开发、测试、生产)的配置文件，然后再默认的<code>application.properties</code>中，选择激活使用哪个环境即可，在配置文件中配置<code>spring.properties.active=dev</code>即可使用开发环境</p>
+        <h1 id="多进程的必要性"><a href="#多进程的必要性" class="headerlink" title="多进程的必要性"></a>多进程的必要性</h1><p>开发一个桌面客户端应用，必然要面临一些场景需要通过多进程实现，比如需要进行非常重的计算，再比如需要异步的查询数据库，或者在后台需要建立socket通信。</p>
+<p>Electron本身就分为两个进程：<code>主进程</code>和<code>渲染进程</code>，两个进程通过<code>rpc</code>互相通信，但是如果<code>主进程</code>阻塞，<code>渲染进程</code>也会阻塞，这就是为什么不要在<code>主进程</code>里执行重量级的数据运算等操作的原因。</p>
+<h1 id="so-如何在Electron里实现多进程"><a href="#so-如何在Electron里实现多进程" class="headerlink" title="so 如何在Electron里实现多进程"></a>so 如何在Electron里实现多进程</h1><p>目前来看有两种方式:</p>
+<ol>
+<li>使用NodeJs提供的Web workers</li>
+<li>在主进程里创建一个看不到的窗口(每个窗口都是一个单独的渲染进程)执行其他任务</li>
+</ol>
+<h1 id="woker方式"><a href="#woker方式" class="headerlink" title="woker方式"></a>woker方式</h1><p>worker 是从父进程创建出来后，就会执行创建时构造传入的JS脚本文件，并且worker是单独运行在另外的上下文中的，因此使用Web Worker这种方式有其本身的一些限制：</p>
+<ul>
+<li>worker无法访问dom</li>
+<li>worker无法使用Electron提供的模块</li>
+<li>worker不适合用来运行一些长期任务（像服务器进程一眼一直运行），适合运行一些运算量比较大的临时任务</li>
+</ul>
+<h1 id="worker的例子"><a href="#worker的例子" class="headerlink" title="worker的例子"></a>worker的例子</h1><p>待补充…</p>
+<h1 id="隐藏的窗口方式"><a href="#隐藏的窗口方式" class="headerlink" title="隐藏的窗口方式"></a>隐藏的窗口方式</h1><p>这个说白了就是创建一个看不见的窗口，每个窗口都有一个渲染进程，也算是曲线多进程了，你可以在这个渲染进程里干一些计算量比较大的任务之类的。<br>另外这种方式可以访问DOM元素，可以通过IPC方式跟主进程通信，但是这种方式相对而言更加占用资源。</p>
+<p>在<code>main.js</code>入口文件中，通过指定参数可以创建一个隐藏的窗口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// create hidden worker window</span><br><span class="line">  workerWindow = new BrowserWindow(&#123;</span><br><span class="line">    show: false,</span><br><span class="line">    webPreferences: &#123; nodeIntegration: true &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="进程与进程间的通信方式"><a href="#进程与进程间的通信方式" class="headerlink" title="进程与进程间的通信方式"></a>进程与进程间的通信方式</h1><p>Electron并没有提供进程与进程间的通信方式，因此要采用很low的方式：<br>子进程发消息给主进程，主进程再根据消息内容传给对应的另外一个子进程</p>
 
       
     </div>
@@ -319,9 +336,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
-          
-            <a href="/tags/Spring/" rel="tag"># Spring</a>
+            <a href="/tags/Electron/" rel="tag"># Electron</a>
           
         </div>
       
@@ -334,8 +349,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/15/Spring-Boot实现文件上传与下载/" rel="next" title="Spring Boot实现文件上传与下载">
-                <i class="fa fa-chevron-left"></i> Spring Boot实现文件上传与下载
+              <a href="/2020/01/15/创建Electron应用/" rel="next" title="创建Electron应用">
+                <i class="fa fa-chevron-left"></i> 创建Electron应用
               </a>
             
           </div>
@@ -343,10 +358,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/15/单一职责原则（SRP）/" rel="prev" title="单一职责原则（SRP）">
-                单一职责原则（SRP） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -398,8 +409,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -459,6 +479,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多进程的必要性"><span class="nav-number">1.</span> <span class="nav-text">多进程的必要性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#so-如何在Electron里实现多进程"><span class="nav-number">2.</span> <span class="nav-text">so 如何在Electron里实现多进程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#woker方式"><span class="nav-number">3.</span> <span class="nav-text">woker方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#worker的例子"><span class="nav-number">4.</span> <span class="nav-text">worker的例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#隐藏的窗口方式"><span class="nav-number">5.</span> <span class="nav-text">隐藏的窗口方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#进程与进程间的通信方式"><span class="nav-number">6.</span> <span class="nav-text">进程与进程间的通信方式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

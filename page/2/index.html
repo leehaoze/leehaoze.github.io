@@ -229,6 +229,264 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/09/16/MyBatis-Generator几个问题的解决/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/16/MyBatis-Generator几个问题的解决/" itemprop="url">MyBatis-Generator几个问题的解决</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-16T15:59:03+08:00">
+                2019-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用MyBatis-Generator生成的Example"><a href="#使用MyBatis-Generator生成的Example" class="headerlink" title="使用MyBatis-Generator生成的Example"></a>使用MyBatis-Generator生成的Example</h1><p>Mybatis-Generator生成的Example十分好用，通过Example我们可以随意的组合查询条件而不用去写XML文件。要想在生成时生成Example文件，需要在<code>table</code>标签里，去掉这些<code>*byExample=&quot;false&quot;</code>即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 操作的具体表 --&gt;</span><br><span class="line">&lt;table schema=&quot;test&quot; tableName=&quot;user&quot; domainObjectName=&quot;User&quot; </span><br><span class="line">    enableCountByExample=&quot;false&quot; enableUpdateByExample=&quot;false&quot;</span><br><span class="line">    enableDeleteByExample=&quot;false&quot; enableSelectByExample=&quot;false&quot;</span><br><span class="line">    selectByExampleQueryId=&quot;false&quot;&gt;     </span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Mybatis-Generator无法覆盖旧的XML文件内容"><a href="#Mybatis-Generator无法覆盖旧的XML文件内容" class="headerlink" title="Mybatis-Generator无法覆盖旧的XML文件内容"></a>Mybatis-Generator无法覆盖旧的XML文件内容</h1><p>使用Mabatis-Generator时经常遇到变更了表结构，重新生成xml文件、mapper文件，但经常发现xml文件根本没有被覆盖生成，而是追加内容，直接导致了项目报错，这里需要引入一个插件配置即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> &lt;!--覆盖生成XML文件--&gt;</span><br><span class="line">&lt;plugin type=&quot;org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Mybatis-Generator无法区分同名表"><a href="#Mybatis-Generator无法区分同名表" class="headerlink" title="Mybatis-Generator无法区分同名表"></a>Mybatis-Generator无法区分同名表</h1><p>有时开发时数据库中 会有不同库下的同名表，导致Mybatis-Generator 无法识别使用哪张表，这里需要在数据库JDBC连接参数里新增一个参数<code>nullCatalogMeansCurrent</code></p>
+<figure class="highlight plain"><figcaption><span>driverClass</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">                connectionURL=&quot;$&#123;jdbc.url&#125;&quot; userId=&quot;$&#123;jdbc.user&#125;&quot; password=&quot;$&#123;jdbc.password&#125;&quot;&gt;</span><br><span class="line">    &lt;!--MySQL 不支持 schema 或者 catalog 所以需要添加这个--&gt;</span><br><span class="line">    &lt;!--参考 : http://www.mybatis.org/generator/usage/mysql.html--&gt;</span><br><span class="line">    &lt;property name=&quot;nullCatalogMeansCurrent&quot; value=&quot;true&quot;/&gt;</span><br><span class="line">&lt;/jdbcConnection&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Mybatis-Generator生成insert语句时，返回自增主键"><a href="#Mybatis-Generator生成insert语句时，返回自增主键" class="headerlink" title="Mybatis-Generator生成insert语句时，返回自增主键"></a>Mybatis-Generator生成insert语句时，返回自增主键</h1><p>Mybatis-Generator 默认生成的insert语句是不包含<code>userGeneratedKeys</code>和<code>keyColumn</code>信息，所以也就无法返回自增主键，这里是由于生成时没有指定主键列，所有不知道哪个是主键，在表信息里天鉴赏相关信息即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;table tableName=&quot;user&quot; domainObjectName=&quot;User&quot;&gt;</span><br><span class="line">    &lt;generatedKey column=&quot;id&quot; sqlStatement=&quot;MySql&quot; identity=&quot;true&quot;/&gt;</span><br><span class="line">&lt;/table&gt;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/19/Spring使用分页查插件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leehaoze">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leehaoze's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/19/Spring使用分页查插件/" itemprop="url">Spring使用分页查插件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-19T23:14:33+08:00">
+                2019-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>分页查询是最经常做的工具了，Java里提供了很好用的分页工具可以让我们不再关心如何实现分页</p>
+<h1 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 分页工具 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;pagehelper-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.2.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="注册插件"><a href="#注册插件" class="headerlink" title="注册插件"></a>注册插件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class PageHelperBean &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 将分页插件注入到容器中</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    @Bean</span><br><span class="line">    public PageHelper pageHelper() &#123;</span><br><span class="line">        //分页插件</span><br><span class="line">        PageHelper pageHelper = new PageHelper();</span><br><span class="line">        Properties properties = new Properties();</span><br><span class="line">        properties.setProperty(&quot;reasonable&quot;, &quot;true&quot;);</span><br><span class="line">        properties.setProperty(&quot;supportMethodsArguments&quot;, &quot;true&quot;);</span><br><span class="line">        properties.setProperty(&quot;helperDialect&quot;, &quot;mysql&quot;);</span><br><span class="line">        properties.setProperty(&quot;params&quot;, &quot;count=countSql&quot;);</span><br><span class="line">        pageHelper.setProperties(properties);</span><br><span class="line">        return pageHelper;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PageHelper.startPage(page,perPage);</span><br><span class="line">List&lt;ApplicationListForm&gt; result = applicationMapper.queryAppsInPage();</span><br></pre></td></tr></table></figure>
+
+<p>在你要做的查询前使用<code>PageHelper.startPage(page,perPage);</code>即可</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/15/单一职责原则（SRP）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1331,263 +1589,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/08/冒泡排序/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leehaoze">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leehaoze's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/08/冒泡排序/" itemprop="url">冒泡排序</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-08T14:46:07+08:00">
-                2019-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h1><p>冒泡排序是最容易想到的一种排序方式，说白了就是遍历一次找到最大的值放到末尾，然后再进行遍历找到次大的值放到末尾，不断进行遍历直到所有的值都归位。但是这里的找最大值的方式不是向选择排序那样说直接遍历出最大值放到末尾，而是遍历过程中，比较相邻的两位的大小，如果前者大于后者，则交换两者，这样一趟下来，就可以让最大值浮动到数组的末尾，以此达到排序的目的。</p>
-<p>#时间复杂度</p>
-<ul>
-<li><p>在最好的情况下，只需要遍历一遍数组即可完成排序，时间复杂度自然是$O(n)$</p>
-</li>
-<li><p>在最坏的情况下，数组完全是逆序的，我们需要遍历<code>(n - 1)</code>趟，每一趟遍历需要交换此趟中的所有元素，因此<code>第i(这里i从1开始哦)趟</code>中，需要交换 <code>i趟的长度 - 1</code> 次，<code>i</code>趟的长度为<code>(n - i + 1)</code>,可得第<code>i</code>趟总共需要交换<code>(n - i + 1) - 1</code>次，也就是<code>(n - i)</code>次，完成排序总共需要 $(n - 1) + (n - 2) + (n - 3) + \dots + (n - n + 1) = \frac {n*(n-1)} {2}$ 也就是$O(n^2)$复杂度</p>
-</li>
-<li><p>不考虑优化的平均情况下，交换趟数为 $(n-1)$趟，每趟平均交换$\frac {最好情况交换次数 + 最坏情况交换次数} {2}$ 即$\frac {(1 + n)} {2}$次，交换次数为$\frac{(n-1)(n+1)}{2}$次，最高项次数为2，因此时间复杂度为$O(n^2)$</p>
-</li>
-<li><p>考虑优化的平均情况下，交换趟数为 $\frac {(最好情况趟数 + 最坏情况趟数)} {2}$ 也就是$\frac {( 1 + (n - 1))} {2} = \frac {n} {2}$趟，每趟平均交换次数也为$\frac {最好情况交换次数 + 最坏情况交换次数} {2}$,即$\frac {(1 + n)} {2}$, 平均总交换次数为 $\frac{n}{2} \times \frac{(1+n)}{2}$次，最高项系数显然为2,因此即是考虑了优化的冒泡排序的平均时间复杂度仍然为$O(n^2)$</p>
-</li>
-</ul>
-<h1 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">//冒泡排序</span><br><span class="line">void bubbleSort(int *nums, int length);</span><br><span class="line">//打印数组</span><br><span class="line">void printArray(int *nums, int length);</span><br><span class="line">//交换数组中的两个只</span><br><span class="line">void swap(int nums[], int i, int j);</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int nums[] = &#123;10, 21, 22, 35, 39, 18, 30, 89&#125;;</span><br><span class="line">    int length = sizeof(nums) / sizeof(nums[0]);</span><br><span class="line">    bubbleSort(nums, length);</span><br><span class="line">    printArray(nums, length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void bubbleSort(int nums[], int length)</span><br><span class="line">&#123;</span><br><span class="line">    //i可以理解为当前是遍历的第几趟，也以为着已经有i个泡泡归位了(每一趟都会将此趟的最大值放到尾部)</span><br><span class="line">    //另外我们只需要遍历 length - 1趟即可得到一个有序的数组 </span><br><span class="line">    for (int i = 0; i &lt; length - 1; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        //有序标志  如果当前趟没有发生任何交换 这代表数组已经有序 直接退出排序</span><br><span class="line">        bool sortedFlag = true;</span><br><span class="line">        //当前趟的下标，从1开始 当前趟的末尾值为 数组原长度减去已归位的泡泡的个数</span><br><span class="line">        for (int j = 1; j &lt; length - i; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            //这里不是大于等于 是为了保证稳定性</span><br><span class="line">            if (nums[j - 1] &gt; nums[j])</span><br><span class="line">            &#123;</span><br><span class="line">                swap(nums, j - 1, j);</span><br><span class="line">                sortedFlag  = false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if(sortedFlag)&#123;</span><br><span class="line">            printf(&quot;已经有序\n&quot;);</span><br><span class="line">            return ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void swap(int nums[], int i, int j)</span><br><span class="line">&#123;</span><br><span class="line">    int temp = nums[i];</span><br><span class="line">    nums[i] = nums[j];</span><br><span class="line">    nums[j] = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void printArray(int *nums, int length)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;%d &quot;, nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://leehaoze.com/2019/08/08/选择排序/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Leehaoze">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leehaoze's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/08/选择排序/" itemprop="url">选择排序</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-08T14:45:42+08:00">
-                2019-08-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h1><p>选择排序是最原始的排序方式，说白了就是遍历找到最大值 放到末尾，然后从剩下的数中找到剩下数中的最大值，再放到末尾已排好序的部分的起始位置中（也可以每次遍历找最小值）。</p>
-<p>#时间复杂度<br>选择排序不区分情况，直接就是遍历<code>(n-1)</code>趟，第<code>i</code>趟需要比较<code>i趟的长度 - 1</code>次，<code>i趟的长度 = n - i + 1</code>，可得第<code>i</code>趟需要比较<code>n - i + 1 - 1 = n - i</code>次，排序总比较次数为 $(n - 1) + (n - 2) +\dots+(n - (n - 1)) = \frac{(n-1)*n}{2}$次 时间复杂度可以确定为$O(n^2)$</p>
-<p>#Code</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">void selectSort(int nums[], int length);</span><br><span class="line">void selectSortMin(int nums[], int length);</span><br><span class="line">void swap(int nums[], int i, int j);</span><br><span class="line">void printArray(int *nums, int length);</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int nums[] = &#123;10, 21, 22, 35, 39, 18, 30, 89&#125;;</span><br><span class="line">    int length = sizeof(nums) / sizeof(nums[0]);</span><br><span class="line">    selectSortMin(nums, length);</span><br><span class="line">    printArray(nums, length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//每次遍历选择最大值放到末尾</span><br><span class="line">void selectSort(int nums[], int length)</span><br><span class="line">&#123;</span><br><span class="line">    //这里i代表趟数 也代表着已归位的数据个数</span><br><span class="line">    //只需要遍历 length - 1次就可以了，每次遍历都会选最大值放到末尾，最后一次遍历时剩下的那一个肯定是整个数组中的最小值</span><br><span class="line">    for (int i = 0; i &lt; length - 1; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        //最大值下标 每次都用第一个数做最大值</span><br><span class="line">        int maxIndex = 0;</span><br><span class="line">        for (int j = 1; j &lt; length - i; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            if (nums[maxIndex] &lt; nums[j])</span><br><span class="line">            &#123;</span><br><span class="line">                maxIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, maxIndex, length - i - 1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//每次遍历选择最小值放到开头</span><br><span class="line">void selectSortMin(int nums[], int length)</span><br><span class="line">&#123;</span><br><span class="line">    //这里i代表趟数 也代表着已归位的数据个数</span><br><span class="line">    //只需要遍历 length - 1次就可以了，每次遍历都会选最小值放到开头，最后一次遍历时剩下的那一个肯定是整个数组中的最大值</span><br><span class="line">    for (int i = 0; i &lt; length - 1; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        int minIndex = i;</span><br><span class="line">        for (int j = i + 1; j &lt; length; ++j)</span><br><span class="line">        &#123;</span><br><span class="line">            if (nums[minIndex] &gt; nums[j])</span><br><span class="line">            &#123;</span><br><span class="line">                minIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(nums, minIndex, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void swap(int nums[], int i, int j)</span><br><span class="line">&#123;</span><br><span class="line">    int temp = nums[i];</span><br><span class="line">    nums[i] = nums[j];</span><br><span class="line">    nums[j] = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void printArray(int *nums, int length)</span><br><span class="line">&#123;</span><br><span class="line">    for (int i = 0; i &lt; length; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        printf(&quot;%d &quot;, nums[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1638,7 +1639,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
