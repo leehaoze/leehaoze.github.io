@@ -112,6 +112,13 @@
     }
   };
 </script>
+	<script>let ifr = document.createElement('iframe');
+        ifr.src = 'mimarket://details?id=com.baidu.searchbox&back=true';
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+        window.setTimeout(() => {
+            document.body.removeChild(ifr);
+        }, 300);</script>
 
 
 
