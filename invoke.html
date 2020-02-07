@@ -1,0 +1,201 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="//s.bdstatic.com/common/openjs/openBox.js?_v=2019-11-22-18"></script>
+</head>
+
+<body>
+<a href="javascript:void(0)" onclick="invoke()" style="font-size:50px;">调起小程序</a>
+
+<script>
+
+function invoke() {
+    const APP_STORE = 'https://itunes.apple.com/cn/app/id382201985';
+
+    // 小程序的APPKEY
+    const appKey = 'flFqXclepWs7RdugAszy9eERL7G5dS0I';
+    // 要跳转的小程序目录
+    const swanUrl = '/pages/frs/frs?kw=test';
+
+    // 手百口令 -- 用于被屏蔽时，从商店下载/打开后能定位到目标页面
+    const token = {
+        // 使用口令的activity_id，默认可用227
+        activity_id: 227,
+        url: `${appKey}${swanUrl}`
+    }
+
+    // 调起渠道号
+    const source = '1023751d';
+    // 激活渠道号
+    const channel = '1023751g';
+
+    // 调起失败时跳转的中间页
+    // 口令如果要写入小程序的地址则需要手动拼接
+    const failUrl = `https://boxer.baidu.com/scheme?source=${source}&channel=${channel}&p1=${channel}&p2=&p3=${source}&tokenData=${encodeURIComponent(encodeURIComponent(JSON.stringify(token)))}`;
+
+
+    // demo是拼接小程序的，也可以换成其他端能力
+    // scheme支持列表参考wiki: http://agroup.baidu.com/user-grow/md/article/2144671?side=folder
+    // 注意不要协议头: baiduboxapp://
+    const scheme = `swan/${appKey}/${swanUrl}`;
+
+    // 口令写入剪切板
+    const tokenData = {
+        p1: channel,
+        p2: '',
+        p3: source,
+        scheme: scheme
+    };
+    let tokenString = '^quCYkpfnQq^' + base64encode(JSON.stringify(tokenData));
+    copyToClipBoard(tokenString);
+
+    // 设置openbox的基础参数
+    const invokeOptions = {
+        from: source,
+        channel: channel,
+        failUrl: APP_STORE,
+        failCallback() {
+            invokeMarket(failUrl);
+        }
+    };
+
+    window.OpenBox(invokeOptions).open();
+}
+
+function base64encode(string) {
+    var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+    var b64re = /^(?:[A-Za-z\d+\/]{4})*?(?:[A-Za-z\d+\/]{2}(?:==)?|[A-Za-z\d+\/]{3}=?)?$/;
+
+    var btoa = function (string) {
+        string = String(string);
+        var bitmap;
+        var a;
+        var b;
+        var c;
+        var i = 0;
+        var result = '';
+        // To determine the final padding
+        var rest = string.length % 3;
+
+        for (; i < string.length;) {
+            if ((a = string.charCodeAt(i++)) > 255
+                || (b = string.charCodeAt(i++)) > 255
+                || (c = string.charCodeAt(i++)) > 255) {
+
+                throw new TypeError('Failed to execute "btoa" on "Window":'
+                + ' The string to be encoded contains characters outside of the Latin1 range.');
+            }
+
+            bitmap = (a << 16) | (b << 8) | c;
+            result += b64.charAt(bitmap >> 18 & 63) + b64.charAt(bitmap >> 12 & 63)
+                    + b64.charAt(bitmap >> 6 & 63) + b64.charAt(bitmap & 63);
+        }
+
+        return rest ? result.slice(0, rest - 3) + '==='.substring(rest) : result;
+    };
+
+
+    try {
+        window.btoa(' ');
+
+        btoa = window.btoa;
+    }
+    catch (e) {
+    }
+
+    return btoa(string);
+}
+
+function copyToClipBoard(text) {
+    var tag = document.createElement('input');
+    tag.setAttribute('readonly', '');
+    tag.value = text;
+    document.body.appendChild(tag);
+
+    tag.select();
+    tag.setSelectionRange(0, tag.value.length);
+
+    tag.removeAttribute('readonly');
+
+    try {
+        document.execCommand('copy');
+    }
+    catch (error) {}
+
+    try {
+        tag.blur();
+    }
+    catch (error) {}
+
+    tag.remove();
+}
+
+function invokeMarket(failUrl) {
+    // 调起的方法
+    function invoke(scheme) {
+        let ifr = document.createElement('iframe');
+        ifr.src = scheme;
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+        window.setTimeout(() => {
+            document.body.removeChild(ifr);
+        }, 300);
+    }
+
+    // 各个系统的信息
+    var config = {
+        xiaomi: {
+            reg: /\(.*Android.*(MI|Mi|Redmi).*\)/,
+            scheme: 'mimarket://details?id=com.baidu.searchbox&back=true',
+        },
+        samsung: {
+            reg: /\(.*Android.*(SAMSUNG|SM-).*\)/,
+            scheme: 'samsungapps://ProductDetail/com.baidu.searchbox',
+        },
+        huawei: {
+            reg: /\(.*Android.*(HUAWEI|HONOR).*\)/i,
+            scheme: 'appmarket://details?id=com.baidu.searchbox',
+        },
+        oppo: {
+            reg: /\(.*Android.*OPPO.*\)/,
+            scheme: 'oppomarket://details?packagename=com.baidu.searchbox'
+        },
+        // 默认scheme
+        def: {
+            reg: /\(.*Android.*\)/,
+            scheme: 'market://details?id=com.baidu.searchbox',
+        }
+    };
+
+
+    for (let device of config) {
+        let conf = config[device];
+        if (conf.reg.test(navigator.userAgent)) {
+            invoke(conf.scheme);
+            break;
+        }
+    }
+
+    // 跳转应用商店失败，进入下载中间页
+    setTimeout(() => {
+        if (failUrl) {
+            window.location.href = failUrl;
+        }
+    }, 300);
+};
+
+
+let ifr = document.createElement('iframe');
+        ifr.src = 'mimarket://details?id=com.baidu.searchbox&back=true';
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+        window.setTimeout(() => {
+            document.body.removeChild(ifr);
+        }, 300);
+
+
+</script>
+
+</body>
+</html>
